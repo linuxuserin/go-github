@@ -29,9 +29,20 @@ func main() {
 	for _, u := range users {
 		result := GetUsers(u)
 		colour.Cyan(`Username:	%s`, result.Login)
+		colour.Cyan(`ID:		%d`, result.ID)
+		colour.Cyan(`Created on:	%s`, result.CreatedAt)
+		colour.Cyan(`Updated on:	%s`, result.UpdatedAt)
 		colour.Blue(`Name:		%s`, result.Name)
-		colour.Green(`Email:		%s`, result.Email)
 		colour.HiMagenta(`Bio:		%s`, result.Bio)
+		colour.Green(`Website:		%s`, result.Blog)
+		colour.Green(`Twitter:		%s`, result.Twitter)
+		colour.Green(`Email:		%s`, result.Email)
+		colour.Blue(`Location:	%s`, result.Location)
+		colour.Blue(`Company:	%s`, result.Company)
+		colour.Blue(`Repositories:	%d(s)`, result.PublicRepos)
+		colour.Blue(`Gists:	%d(s)`, result.PublicGists)
+		colour.Green(`Followers:		%d(s)`, result.Followers)
+		colour.Green(`Following:		%d(s)`, result.Following)
 		fmt.Println("")
 	}
 

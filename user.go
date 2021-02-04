@@ -42,6 +42,7 @@ type User struct {
 	Email             string      `json:"email"`
 	Hireable          interface{} `json:"hireable"`
 	Bio               string      `json:"bio"`
+	Twitter           string      `json:"twitter_username"`
 	PublicRepos       int         `json:"public_repos"`
 	PublicGists       int         `json:"public_gists"`
 	Followers         int         `json:"followers"`
