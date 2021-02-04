@@ -1,4 +1,4 @@
-module github.com/mrinjamul/go-github
+module github.com/linuxuserin/go-github
 
 go 1.13
 
