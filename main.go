@@ -3,58 +3,62 @@ package main
 import (
 	"fmt"
 	"os"
-	"strings"
 
 	colour "github.com/fatih/color"
-	flag "github.com/ogier/pflag"
+	flag "github.com/spf13/pflag"
 )
 
 var (
-	user  string
-	emoji string
+	user      string
+	emoji     string
+	tokenfile string
+)
+
+var (
+	flagUser string
+	flagAuth string
+	flagHelp bool
 )
 
 func main() {
 	// parse flags
 	flag.Parse()
 
+	homedir, err := os.UserHomeDir()
+	tokenfile = homedir + "/.go-github.token"
+
+	if err != nil {
+		colour.Red("Something went wrong")
+		os.Exit(1)
+	}
+
 	// if user does not supply flags, print usage
 	if flag.NFlag() == 0 {
 		printUsage()
 	}
 
-	users := strings.Split(user, ",")
-	fmt.Printf("Searching user(s): %s\n", users)
-	fmt.Println("")
-	for _, u := range users {
-		result := GetUsers(u)
-		colour.Cyan(`Username:	%s`, result.Login)
-		colour.Cyan(`ID:		%d`, result.ID)
-		colour.Cyan(`Created on:	%s`, result.CreatedAt)
-		colour.Cyan(`Updated on:	%s`, result.UpdatedAt)
-		colour.Blue(`Name:		%s`, result.Name)
-		colour.HiMagenta(`Bio:		%s`, result.Bio)
-		colour.Green(`Website:		%s`, result.Blog)
-		colour.Green(`Twitter:		%s`, result.Twitter)
-		colour.Green(`Email:		%s`, result.Email)
-		colour.Blue(`Location:	%s`, result.Location)
-		colour.Blue(`Company:	%s`, result.Company)
-		colour.Blue(`Repositories:	%d(s)`, result.PublicRepos)
-		colour.Blue(`Gists:	%d(s)`, result.PublicGists)
-		colour.Green(`Followers:		%d(s)`, result.Followers)
-		colour.Green(`Following:		%d(s)`, result.Following)
-		fmt.Println("")
+	if flagHelp {
+		printUsage()
+	}
+
+	if flagAuth != "" {
+		cmdAuth()
+	}
+	if flagUser != "" {
+		cmdUsers()
 	}
 
 }
 
 func init() {
-	flag.StringVarP(&user, "user", "u", "", "Search Users")
+	flag.StringVarP(&flagUser, "user", "u", "", "Search Users")
+	flag.StringVarP(&flagAuth, "auth", "x", "", "Login to Github")
+	flag.BoolVarP(&flagHelp, "help", "h", false, "help message")
 }
 
 func printUsage() {
 	fmt.Printf("Usage: %s [options]\n", os.Args[0])
 	fmt.Println("Options:")
 	flag.PrintDefaults()
-	os.Exit(1)
+	os.Exit(0)
 }
