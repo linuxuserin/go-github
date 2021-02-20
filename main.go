@@ -15,9 +15,10 @@ var (
 )
 
 var (
-	flagUser string
-	flagAuth string
-	flagHelp bool
+	flagUser    string
+	flagAuth    string
+	flagHelp    bool
+	flagVersion bool
 )
 
 func main() {
@@ -41,6 +42,10 @@ func main() {
 		printUsage()
 	}
 
+	if flagVersion {
+		printVersion()
+	}
+
 	if flagAuth != "" {
 		cmdAuth()
 	}
@@ -54,6 +59,7 @@ func init() {
 	flag.StringVarP(&flagUser, "user", "u", "", "Search Users")
 	flag.StringVarP(&flagAuth, "auth", "x", "", "Login to Github")
 	flag.BoolVarP(&flagHelp, "help", "h", false, "help message")
+	flag.BoolVarP(&flagVersion, "version", "v", false, "print version")
 }
 
 func printUsage() {
@@ -61,4 +67,8 @@ func printUsage() {
 	fmt.Println("Options:")
 	flag.PrintDefaults()
 	os.Exit(0)
+}
+func printVersion() {
+	version := "1.0.0"
+	fmt.Println(os.Args[0] + " version " + version)
 }
