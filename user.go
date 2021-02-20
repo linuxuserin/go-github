@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	colour "github.com/fatih/color"
@@ -62,7 +63,7 @@ func GetUsers(name string) User {
 			colour.Red("Something went wrong")
 			os.Exit(1)
 		}
-		token = string(tkn)
+		token = string(strings.Trim(string(tkn), "\n"))
 	}
 
 	req, err := http.NewRequest("GET", apiURL+userEndpoint+name, nil)
