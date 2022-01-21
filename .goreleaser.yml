@@ -16,8 +16,6 @@ before:
 builds:
   - env:
       - CGO_ENABLED=0
-    # Defaults to the project name.
-    id: "go-build"
     ldflags: -s -w
     goos:
       - linux
@@ -39,26 +37,24 @@ builds:
       - goos: windows
         goarm: "7"
 
-archives:
-  - id: archive
-  - format_overrides:
-      - goos: windows
-        format: zip
-  - replacements:
-      darwin: Darwin
-      linux: Linux
-      windows: Windows
-      386: i386
-      amd64: x86_64
-    files:
-      - LICENSE.md
-      - README.md
+# archives:
+#   - format_overrides:
+#       - goos: windows
+#         format: zip
+#   - replacements:
+#       darwin: Darwin
+#       linux: Linux
+#       windows: Windows
+#       386: i386
+#       amd64: x86_64
+#   - files:
+#       - LICENSE.md
+#       - README.md
 
 nfpms:
-  - id: build-packages
   - vendor: linuxuserin
     homepage: https://github.com/linuxuserin/go-github
-    maintainer: "Injamul M <linuxuserin@pm.me>"
+    maintainer: "linuxserin <linuxuserin@pm.me>"
     description: "CLI to fetch github user info"
     license: MIT
     formats:
@@ -67,8 +63,7 @@ nfpms:
       - rpm
 
 brews:
-  - name: go-github
-    tap:
+  - tap:
       owner: linuxuserin
       name: homebrew-taps
       branch: main
@@ -102,7 +97,6 @@ changelog:
       order: 10
     - title: Others
       order: 999
-
 # dockers:
 #   - image_templates:
 #     - "username/image:{{ .Tag }}"
