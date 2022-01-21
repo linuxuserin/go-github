@@ -1,39 +1,113 @@
-# This is an example .goreleaser.yml file with some sane defaults.
-# Make sure to check the documentation at http://goreleaser.com
+# variables:
+#   main: ""
+#   binary_name: "go-github"
+#   description: "CLI to fetch github user info"
+#   github_url: "https://github.com/linuxserin"
+#   maintainer: "linuxserin <linuxserin@pm.me>"
+#   homepage: "https://linuxserin.github.io/"
+#   brew_commit_author_name: "linuxserin"
+#   brew_commit_author_email: "linuxserin@pm.me"
+#   brew_owner: linuxuserin
+
 before:
   hooks:
     - go mod tidy
+
 builds:
   - env:
       - CGO_ENABLED=0
+    # Defaults to the project name.
+    id: "go-build"
+    ldflags: -s -w
     goos:
       - linux
       - windows
       - darwin
+      - freebsd
+      - openbsd
+      - netbsd
+    goarch:
+      - amd64
+      - arm64
+      - "386"
+      - arm
+    goarm:
+      - "7"
+    ignore:
+      - goos: windows
+        goarch: arm64
+      - goos: windows
+        goarm: "7"
+
 archives:
+  - id: archive
+  - format_overrides:
+      - goos: windows
+        format: zip
   - replacements:
       darwin: Darwin
       linux: Linux
       windows: Windows
       386: i386
       amd64: x86_64
+    files:
+      - LICENSE.md
+      - README.md
+
+nfpms:
+  - id: build-packages
+  - vendor: linuxuserin
+    homepage: https://github.com/linuxuserin/go-github
+    maintainer: "Injamul M <linuxuserin@pm.me>"
+    description: "CLI to fetch github user info"
+    license: MIT
+    formats:
+      - apk
+      - deb
+      - rpm
+
+brews:
+  - name: go-github
+    tap:
+      owner: linuxuserin
+      name: homebrew-taps
+      branch: main
+    homepage: https://github.com/linuxuserin/go-github
+    description: "CLI to fetch github user info"
+    license: "MIT"
+    commit_author:
+      name: "linuxuserin"
+      email: "linuxuserin@pm.me"
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    folder: Formula
+
 checksum:
   name_template: "checksums.txt"
+
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  name_template: "{{ incpatch .Version }}-dev"
+
 changelog:
   sort: asc
   filters:
     exclude:
       - "^docs:"
-      - "^tests:"
-brews:
-  - name: go-github
-    # goarm: 6
-    homepage: https://github.com/linuxuserin/go-github
-    tap:
-      owner: linuxuserin
-      name: homebrew-taps
+      - "^test:"
+  groups:
+    - title: "New Features"
+      regexp: "^.*feat[(\\w)]*:+.*$"
+      order: 0
+    - title: "Bug fixes"
+      regexp: "^.*fix[(\\w)]*:+.*$"
+      order: 10
+    - title: Others
+      order: 999
+
 # dockers:
 #   - image_templates:
 #     - "username/image:{{ .Tag }}"
+
+release:
+  footer: |
+    * * *
+    Thoughts? Questions? We love hearing from you. Feel free to reach out on [Mail](mailto:linuxserin@pm.me).
